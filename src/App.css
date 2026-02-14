@@ -1,1 +1,188 @@
 /* App-level styles - Oracle EyE */
+
+/* ===================== 태블릿 (768px 이하) ===================== */
+@media (max-width: 768px) {
+  /* 네비게이션 상단바 */
+  .oe-nav-bar {
+    padding: 0 12px !important;
+    gap: 8px;
+  }
+  .oe-nav-tabs {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .oe-nav-tabs::-webkit-scrollbar { display: none; }
+  .oe-nav-tabs button {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0 10px !important;
+    font-size: 12px !important;
+  }
+  .oe-nav-status {
+    gap: 8px !important;
+  }
+  .oe-nav-status span {
+    font-size: 10px !important;
+  }
+
+  /* 지역 선택 바 */
+  .oe-region-bar {
+    padding: 0 12px !important;
+    flex-wrap: wrap;
+    height: auto !important;
+    min-height: 36px;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  /* 페이지 콘텐츠 패딩 축소 */
+  .page-content {
+    padding: 12px !important;
+  }
+
+  /* 5열 지표 → 3열 */
+  .oe-metrics-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  /* 4열 지표 → 2열 */
+  .oe-metrics-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* 2열 레이아웃 → 1열 */
+  .oe-two-col {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 피드 수평 스크롤 */
+  .oe-feed-scroll {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .oe-feed-row {
+    min-width: 520px;
+  }
+
+  /* 검증 레이아웃 → 세로 스택 */
+  .oe-verify-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 검증 결과 버튼 → 유지 */
+  .oe-verify-actions {
+    grid-template-columns: 1fr 1fr 1fr !important;
+  }
+
+  /* 페르소나 카드 → 2열 */
+  .oe-persona-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* 지역 요약 카드 → 유지 (이미 JS로 제어) */
+
+  /* 합의도 헤더 */
+  .oe-consensus-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px;
+  }
+
+  /* 보고서 페이지 패딩 축소 */
+  .oe-report-page {
+    padding: 16px !important;
+  }
+}
+
+/* ===================== 폰 (480px 이하) ===================== */
+@media (max-width: 480px) {
+  /* 네비게이션 더 작게 */
+  .oe-nav-bar {
+    padding: 0 8px !important;
+    height: 44px !important;
+  }
+  .oe-nav-bar > div:first-child {
+    margin-right: 12px !important;
+  }
+  .oe-nav-bar > div:first-child span {
+    font-size: 13px !important;
+  }
+  .oe-nav-tabs button {
+    padding: 0 8px !important;
+    font-size: 11px !important;
+    height: 44px !important;
+  }
+  .oe-nav-status {
+    display: none !important;
+  }
+
+  /* 지역 바 */
+  .oe-region-bar {
+    padding: 4px 8px !important;
+    gap: 4px !important;
+    font-size: 10px !important;
+  }
+  .oe-region-bar button {
+    padding: 2px 8px !important;
+    font-size: 10px !important;
+  }
+
+  /* 페이지 콘텐츠 */
+  .page-content {
+    padding: 8px !important;
+  }
+
+  /* 5열 → 2열 */
+  .oe-metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* 4열 → 2열 */
+  .oe-metrics-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* 2열 → 1열 */
+  .oe-two-col {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* 피드 행 */
+  .oe-feed-row {
+    min-width: 480px;
+    font-size: 11px !important;
+  }
+
+  /* 검증 버튼 → 1열 */
+  .oe-verify-actions {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 페르소나 → 1열 */
+  .oe-persona-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* 보고서 패딩 */
+  .oe-report-page {
+    padding: 12px !important;
+  }
+
+  /* 지역 카드 */
+  .oe-region-cards {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* safe-area-inset (iPhone 노치) */
+  .oe-nav-bar {
+    padding-left: max(8px, env(safe-area-inset-left)) !important;
+    padding-right: max(8px, env(safe-area-inset-right)) !important;
+  }
+}

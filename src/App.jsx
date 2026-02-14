@@ -104,12 +104,12 @@ const Navigation = ({ current, onChange, selectedRegion, onRegionChange }) => {
   ];
   return (
     <div style={{ position: 'sticky', top: 0, zIndex: 100 }}>
-      <div style={{ display: 'flex', alignItems: 'center', height: 52, background: C.card, borderBottom: `1px solid ${C.border}`, padding: '0 20px', boxShadow: '0 1px 2px rgba(0,0,0,0.04)' }}>
+      <div className="oe-nav-bar" style={{ display: 'flex', alignItems: 'center', height: 52, background: C.card, borderBottom: `1px solid ${C.border}`, padding: '0 20px', boxShadow: '0 1px 2px rgba(0,0,0,0.04)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 32 }}>
           <div style={{ width: 8, height: 8, background: C.accent, borderRadius: '50%' }} />
           <span style={{ fontSize: 15, fontWeight: 800, color: C.text, letterSpacing: '-0.3px' }}>Oracle EyE</span>
         </div>
-        <div style={{ display: 'flex', gap: 2 }}>
+        <div className="oe-nav-tabs" style={{ display: 'flex', gap: 2 }}>
           {tabs.map(t => (
             <button key={t.id} onClick={() => onChange(t.id)} style={{
               background: current === t.id ? C.accentL : 'transparent',
@@ -121,14 +121,14 @@ const Navigation = ({ current, onChange, selectedRegion, onRegionChange }) => {
           ))}
         </div>
         <div style={{ flex: 1 }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div className="oe-nav-status" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <span style={{ fontSize: 12, color: C.accent, fontWeight: 600, background: C.accentL, padding: '4px 10px', borderRadius: 4 }}>선거일 D-{시스템상태.D_Day}</span>
           <span style={{ fontSize: 12, color: C.sub }}>{시스템상태.현재일.replace(/-/g, '.')}</span>
           <span style={{ fontSize: 11, color: C.pos, fontWeight: 600, background: C.posL, padding: '3px 8px', borderRadius: 4 }}>{시스템상태.단계}</span>
         </div>
       </div>
       {/* 지역 선택 바 */}
-      <div style={{ display: 'flex', alignItems: 'center', height: 36, background: selectedRegion !== '전국' ? C.purpleL : C.bg, borderBottom: `1px solid ${C.border}`, padding: '0 20px', gap: 8 }}>
+      <div className="oe-region-bar" style={{ display: 'flex', alignItems: 'center', height: 36, background: selectedRegion !== '전국' ? C.purpleL : C.bg, borderBottom: `1px solid ${C.border}`, padding: '0 20px', gap: 8 }}>
         <span style={{ fontSize: 11, color: C.sub, fontWeight: 600, marginRight: 8 }}>지역 전장:</span>
         <div style={{ display: 'flex', gap: 4 }}>
           {regions.map(r => (
@@ -208,7 +208,7 @@ const Dashboard = ({ selectedRegion, onRegionChange, onScreenChange }) => {
   return (
     <div className="page-content fade-in">
       {/* 핵심 지표 카드 */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 16 }}>
+      <div className="oe-metrics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 16 }}>
         <MetricCard label={selectedRegion !== '전국' ? `체감 지지율 (${selectedRegion})` : '당 지지율 (KSOI)'} value={regionMetrics.지지율} change={regionMetrics.지지율변화} changeColor={C.pos} note={selectedRegion !== '전국' ? `${selectedRegion} 전장 기준` : '직전 주 대비'} />
         <MetricCard label="대통령 긍정 평가" value={regionMetrics.대통령} change={regionMetrics.대통령변화} changeColor={C.pos} note="KSOI 2/9~10 조사" />
         <MetricCard label={selectedRegion !== '전국' ? `${selectedRegion} 수집 건수` : '금일 수집 건수'} value={regionMetrics.수집} change={regionMetrics.수집상세} note={selectedRegion !== '전국' ? `${selectedRegion} 지역 필터` : '전일 대비 +15%'} />
@@ -217,7 +217,7 @@ const Dashboard = ({ selectedRegion, onRegionChange, onScreenChange }) => {
       </div>
 
       {/* 감성 추이 + 3대 전장 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 16, marginBottom: 16 }}>
+      <div className="oe-two-col" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 16, marginBottom: 16 }}>
         <Card title={selectedRegion !== '전국' ? `${selectedRegion} 여론 감성 추이` : '여론 감성 추이'} tag="최근 7일">
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={최근7일} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
@@ -265,7 +265,7 @@ const Dashboard = ({ selectedRegion, onRegionChange, onScreenChange }) => {
       </div>
 
       {/* 주요 이슈 + 실시간 피드 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+      <div className="oe-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
         <Card title={selectedRegion !== '전국' ? `${selectedRegion} 주요 이슈` : '오늘의 주요 이슈'} tag={`상위 ${Math.min(filteredIssues.length, 7)}건`}>
           {filteredIssues.slice(0, 7).map((issue, idx) => (
             <div key={issue.순위} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '10px 0', borderBottom: `1px solid ${C.border}` }}>
@@ -296,11 +296,11 @@ const Dashboard = ({ selectedRegion, onRegionChange, onScreenChange }) => {
             ))}
           </div>
         }>
-          <div style={{ maxHeight: 380, overflow: 'auto' }}>
+          <div className="oe-feed-scroll" style={{ maxHeight: 380, overflow: 'auto' }}>
             {filteredFeed.length === 0 ? (
               <EmptyState region={selectedRegion} label="매체 피드" />
             ) : filteredFeed.map(item => (
-              <div key={item.id} style={{
+              <div key={item.id} className="oe-feed-row" style={{
                 display: 'grid', gridTemplateColumns: '80px 56px 80px 1fr 48px',
                 gap: 8, alignItems: 'center', padding: '8px 16px',
                 borderBottom: `1px solid ${C.border}`, fontSize: 12,
@@ -327,7 +327,7 @@ const SentimentView = ({ selectedRegion }) => {
 
   return (
     <div className="page-content fade-in">
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+      <div className="oe-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
         {/* 매체별 감성 분포 */}
         <Card title={selectedRegion !== '전국' ? `${selectedRegion} 매체별 여론 분포` : '매체별 여론 분포'} tag={selectedRegion !== '전국' ? `${selectedRegion} 전장` : '타파크로스 분류 기준'}>
           {mediaData.map(m => (
@@ -457,7 +457,7 @@ const VerificationView = ({ selectedRegion }) => {
       {filteredItems.length === 0 ? (
         <EmptyState region={selectedRegion} label="검증 필요 정보" />
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: '400px 1fr', gap: 16 }}>
+        <div className="oe-verify-layout" style={{ display: 'grid', gridTemplateColumns: '400px 1fr', gap: 16 }}>
           {/* 목록 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {filteredItems.map(item => (
@@ -524,7 +524,7 @@ const VerificationView = ({ selectedRegion }) => {
                 </div>
 
                 <div style={{ fontSize: 11, color: C.sub, marginBottom: 8, fontWeight: 600 }}>검토 결과 입력</div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+                <div className="oe-verify-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                   {[
                     { label: '확인 완료 (사실 부합)', color: C.pos },
                     { label: '추가 조치 필요', color: C.warn },
@@ -575,7 +575,7 @@ const MomentumView = ({ selectedRegion }) => {
       </div>
 
       {/* 핵심 지표 */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 16 }}>
+      <div className="oe-metrics-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 16 }}>
         <MetricCard label={`체감 지지율 (${selectedRegion !== '전국' ? selectedRegion : 'AI 추정'})`} value={`${latest.체감지지율}%`} change={`${latest.속도 >= 0 ? '+' : ''}${latest.속도}%p/일`} changeColor={latest.속도 >= 0 ? C.pos : C.neg} note="보조 추정 지표" />
         <MetricCard label="속도 (1차 미분)" value={velocityLabel} change={`${latest.속도 >= 0 ? '+' : ''}${latest.속도}%p`} changeColor={latest.속도 >= 0 ? C.pos : C.neg} note="전일 대비 변화" />
         <MetricCard label="가속도 (2차 미분)" value={accelLabel} change={`${acceleration >= 0 ? '+' : ''}${acceleration.toFixed(1)}%p`} changeColor={acceleration >= 0 ? C.pos : C.neg} note="속도 변화율" />
@@ -619,7 +619,7 @@ const MomentumView = ({ selectedRegion }) => {
 
       {/* 지역별 현황 */}
       <Card title="전장 지역별 흐름 요약" tag="체감 지지율 기준" style={{ marginTop: 16 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: selectedRegion !== '전국' ? '1fr' : 'repeat(3, 1fr)', gap: 16 }}>
+        <div className="oe-region-cards" style={{ display: 'grid', gridTemplateColumns: selectedRegion !== '전국' ? '1fr' : 'repeat(3, 1fr)', gap: 16 }}>
           {(selectedRegion !== '전국' ? regionSummaries.filter(r => r.지역 === selectedRegion) : regionSummaries).map(r => (
             <div key={r.지역} style={{
               background: r.지역 === selectedRegion ? C.purpleL : C.bg,
@@ -683,7 +683,7 @@ const CrossVerificationView = ({ selectedRegion }) => {
       </div>
 
       {/* 합의도 배지 */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+      <div className="oe-consensus-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
             <span style={{ fontSize: 16, fontWeight: 700 }}>{currentSession.이슈}</span>
@@ -695,7 +695,7 @@ const CrossVerificationView = ({ selectedRegion }) => {
       </div>
 
       {/* 4개 페르소나 카드 */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 16 }}>
+      <div className="oe-persona-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 16 }}>
         {Object.entries(currentSession.분석).filter(([key]) => key !== '종합').map(([key, text]) => {
           const names = { 정량: '정량 분석관', 정성: '정성 분석관', 역사: '역사 분석관', 반론: '반론 분석관' };
           return (
@@ -751,7 +751,7 @@ const DailyReport = ({ selectedRegion }) => {
       </div>
 
       {/* 1페이지 */}
-      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 28, marginBottom: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.08)', position: 'relative' }}>
+      <div className="oe-report-page" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 28, marginBottom: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.08)', position: 'relative' }}>
         <span style={{ position: 'absolute', top: 8, right: 12, fontSize: 10, color: C.muted }}>1 / 2 쪽</span>
 
         {/* 머리글 */}
@@ -773,7 +773,7 @@ const DailyReport = ({ selectedRegion }) => {
         </div>
 
         {/* 핵심 지표 */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginBottom: 20 }}>
+        <div className="oe-metrics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginBottom: 20 }}>
           {[
             { label: '당 지지율', value: 정세보고.핵심지표.당지지율, change: 정세보고.핵심지표.당지지율변화 },
             { label: '대통령 긍정', value: 정세보고.핵심지표.대통령지지율, change: 정세보고.핵심지표.대통령지지율변화 },
@@ -791,7 +791,7 @@ const DailyReport = ({ selectedRegion }) => {
 
         {/* 3대 전장 */}
         <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10 }}>전장 지역별 동향</div>
-        <div style={{ display: 'grid', gridTemplateColumns: selectedRegion !== '전국' ? '1fr' : '1fr 1fr 1fr', gap: 12, marginBottom: 20 }}>
+        <div className="oe-region-cards" style={{ display: 'grid', gridTemplateColumns: selectedRegion !== '전국' ? '1fr' : '1fr 1fr 1fr', gap: 12, marginBottom: 20 }}>
           {Object.entries(지역별여론)
             .filter(([region]) => selectedRegion === '전국' || region === selectedRegion)
             .map(([region, d]) => (
@@ -836,7 +836,7 @@ const DailyReport = ({ selectedRegion }) => {
       </div>
 
       {/* 2페이지 */}
-      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 28, boxShadow: '0 1px 3px rgba(0,0,0,0.08)', position: 'relative' }}>
+      <div className="oe-report-page" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 28, boxShadow: '0 1px 3px rgba(0,0,0,0.08)', position: 'relative' }}>
         <span style={{ position: 'absolute', top: 8, right: 12, fontSize: 10, color: C.muted }}>2 / 2 쪽</span>
 
         <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10 }}>검증 필요 정보 현황{selectedRegion !== '전국' ? ` (${selectedRegion})` : ''}</div>
