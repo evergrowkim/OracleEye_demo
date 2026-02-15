@@ -1,13 +1,86 @@
 /* App-level styles - Oracle EyE */
-/* 50대+ 사용자 가독성 최적화 반영 */
+/* GeoAI Design System + 50대+ 사용자 가독성 최적화 */
+
+/* ===================== CSS Variables (GeoAI Design System) ===================== */
+:root {
+  /* Colors - Primary */
+  --color-primary: #1B6DB5;
+  --color-primary-dark: #155A96;
+  --color-primary-light: #E8F2FB;
+
+  /* Colors - Secondary & Accent */
+  --color-secondary: #4A9BD9;
+  --color-accent-teal: #00BFA5;
+  --color-accent-navy: #1B3A5C;
+
+  /* Colors - Background */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F7F9FC;
+  --color-bg-hover: #EEF3F8;
+
+  /* Colors - Border */
+  --color-border: #E3E8EF;
+  --color-border-light: #F0F2F5;
+
+  /* Colors - Text */
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #4A5568;
+  --color-text-tertiary: #8B95A5;
+
+  /* Colors - Status */
+  --color-success: #00BFA5;
+  --color-warning: #F5A623;
+  --color-error: #E53E3E;
+
+  /* Typography */
+  --font-primary: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 20px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ===================== Global Typography ===================== */
+body, #root {
+  font-family: var(--font-primary);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fade-in animation */
+.fade-in {
+  animation: fadeIn 0.25s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /* ===================== 태블릿 (768px 이하) ===================== */
 @media (max-width: 768px) {
   /* 네비게이션 상단바 */
   .oe-nav-bar {
-    padding: 0 12px !important;
+    padding: 0 16px !important;
     gap: 8px;
-    height: 52px !important;
+    height: 56px !important;
   }
   .oe-nav-tabs {
     overflow-x: auto !important;
@@ -23,8 +96,9 @@
     padding: 0 14px !important;
     font-size: 14px !important;
     font-weight: 600 !important;
-    height: 52px !important;
+    height: 56px !important;
     min-width: 64px !important;
+    letter-spacing: -0.02em;
   }
   .oe-nav-status {
     gap: 8px !important;
