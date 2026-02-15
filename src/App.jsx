@@ -1,5 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useCallback } from 'react';
 import { LineChart, Line, BarChart, Bar, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine, ComposedChart, Scatter } from 'recharts';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { 시스템상태, 매체피드, 주요이슈, 검증필요정보, 지역별여론, 감성추이, 매체별감성, 키워드목록, 모멘텀데이터, 교차검증세션, 정세보고, 지역별감성추이, 지역별매체감성, 지역별키워드, 지역별모멘텀 } from './data/mockData';
 import './App.css';
 
@@ -741,6 +743,11 @@ const CrossVerificationView = ({ selectedRegion }) => {
 
 // ===================== 화면 6: 일일 정세 보고 =====================
 const DailyReport = ({ selectedRegion }) => {
+  const page1Ref = useRef(null);
+  const page2Ref = useRef(null);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [shareStatus, setShareStatus] = useState(null);
+
   const filteredIssues = useMemo(() => {
     if (selectedRegion === '전국') return 주요이슈;
     return 주요이슈.filter(i => i.지역 === selectedRegion || i.지역 === '전국');
@@ -753,21 +760,146 @@ const DailyReport = ({ selectedRegion }) => {
 
   const reportTitle = selectedRegion !== '전국' ? `일일 정세 보고 - ${selectedRegion} 전장` : '일일 정세 보고';
 
+  // PDF 다운로드
+  const handlePdfDownload = useCallback(async () => {
+    if (pdfLoading) return;
+    setPdfLoading(true);
+    try {
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const margin = 8;
+      const contentWidth = pageWidth - margin * 2;
+
+      // 페이지 1 캡처
+      if (page1Ref.current) {
+        const canvas1 = await html2canvas(page1Ref.current, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#FFFFFF',
+          logging: false,
+        });
+        const imgData1 = canvas1.toDataURL('image/jpeg', 0.95);
+        const imgHeight1 = (canvas1.height * contentWidth) / canvas1.width;
+        pdf.addImage(imgData1, 'JPEG', margin, margin, contentWidth, Math.min(imgHeight1, pageHeight - margin * 2));
+      }
+
+      // 페이지 2 캡처
+      if (page2Ref.current) {
+        pdf.addPage();
+        const canvas2 = await html2canvas(page2Ref.current, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#FFFFFF',
+          logging: false,
+        });
+        const imgData2 = canvas2.toDataURL('image/jpeg', 0.95);
+        const imgHeight2 = (canvas2.height * contentWidth) / canvas2.width;
+        pdf.addImage(imgData2, 'JPEG', margin, margin, contentWidth, Math.min(imgHeight2, pageHeight - margin * 2));
+      }
+
+      const dateStr = 정세보고.일자.replace(/\./g, '');
+      const regionStr = selectedRegion !== '전국' ? `_${selectedRegion}` : '';
+      pdf.save(`OracleEyE_정세보고_${dateStr}${regionStr}.pdf`);
+    } catch (err) {
+      console.error('PDF 생성 실패:', err);
+      alert('PDF 생성 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    } finally {
+      setPdfLoading(false);
+    }
+  }, [pdfLoading, selectedRegion]);
+
+  // 공유용 요약 텍스트 생성
+  const generateShareSummary = useCallback(() => {
+    const topIssues = filteredIssues.slice(0, 3).map((issue, i) => `${i + 1}. ${issue.제목} (${issue.감성}, ${issue.속도})`).join('\n');
+    const regionInfo = selectedRegion !== '전국' ? ` [${selectedRegion} 전장]` : '';
+    const verifyCount = filteredVerify.length;
+    const urgentCount = filteredVerify.filter(v => v.주의지수 >= 80).length;
+
+    return `📊 Oracle EyE 일일 정세 보고${regionInfo}
+━━━━━━━━━━━━━━━━
+📅 ${정세보고.일자} | 선거일 ${정세보고.D_Day}
+
+📌 핵심 지표
+• 당 지지율: ${정세보고.핵심지표.당지지율} (${정세보고.핵심지표.당지지율변화})
+• 대통령 긍정: ${정세보고.핵심지표.대통령지지율} (${정세보고.핵심지표.대통령지지율변화})
+• 긍정 여론: ${정세보고.핵심지표.긍정여론} (${정세보고.핵심지표.긍정변화})
+
+🔥 주요 이슈 TOP 3
+${topIssues}
+
+⚠️ 검증 필요: ${verifyCount}건${urgentCount > 0 ? ` (긴급 ${urgentCount}건)` : ''}
+
+🔗 상세 보고서: ${window.location.href}
+
+※ AI 생성 초안 | Oracle EyE by Doaz Inc.`;
+  }, [filteredIssues, filteredVerify, selectedRegion]);
+
+  // Web Share API / 클립보드 복사
+  const handleShare = useCallback(async () => {
+    const summary = generateShareSummary();
+    const shareData = {
+      title: `Oracle EyE 일일 정세 보고 - ${정세보고.일자}`,
+      text: summary,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share && navigator.canShare?.(shareData)) {
+        await navigator.share(shareData);
+        setShareStatus('shared');
+      } else {
+        await navigator.clipboard.writeText(summary);
+        setShareStatus('copied');
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        try {
+          await navigator.clipboard.writeText(summary);
+          setShareStatus('copied');
+        } catch {
+          setShareStatus('error');
+        }
+      }
+    }
+    setTimeout(() => setShareStatus(null), 2500);
+  }, [generateShareSummary]);
+
   return (
     <div className="page-content fade-in" style={{ maxWidth: 900, margin: '0 auto', padding: '16px 20px' }}>
-      <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 14, color: C.sub }}>PDF 출력용 보고서 구성안</span>
           {selectedRegion !== '전국' && <RegionBadge region={selectedRegion} />}
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <Badge>A4 기준</Badge>
-          <button style={{ background: C.accent, color: '#fff', border: 'none', borderRadius: 6, padding: '6px 16px', fontSize: 14, fontWeight: 600 }}>PDF 다운로드</button>
+          <button
+            onClick={handleShare}
+            style={{
+              background: C.teal, color: '#fff', border: 'none', borderRadius: 6,
+              padding: '6px 16px', fontSize: 14, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6,
+              opacity: shareStatus ? 0.7 : 1, transition: 'opacity 0.2s',
+            }}
+          >
+            {shareStatus === 'copied' ? '✓ 복사됨' : shareStatus === 'shared' ? '✓ 공유됨' : shareStatus === 'error' ? '✕ 실패' : '📤 공유'}
+          </button>
+          <button
+            onClick={handlePdfDownload}
+            disabled={pdfLoading}
+            style={{
+              background: pdfLoading ? C.muted : C.accent, color: '#fff', border: 'none', borderRadius: 6,
+              padding: '6px 16px', fontSize: 14, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6,
+              cursor: pdfLoading ? 'wait' : 'pointer', transition: 'background 0.2s',
+            }}
+          >
+            {pdfLoading ? '생성 중...' : 'PDF 다운로드'}
+          </button>
         </div>
       </div>
 
       {/* 1페이지 */}
-      <div className="oe-report-page" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 28, marginBottom: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.08)', position: 'relative' }}>
+      <div ref={page1Ref} className="oe-report-page" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 28, marginBottom: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.08)', position: 'relative' }}>
         <span style={{ position: 'absolute', top: 8, right: 12, fontSize: 14, color: C.muted }}>1 / 2 쪽</span>
 
         {/* 머리글 */}
@@ -852,7 +984,7 @@ const DailyReport = ({ selectedRegion }) => {
       </div>
 
       {/* 2페이지 */}
-      <div className="oe-report-page" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 28, boxShadow: '0 1px 3px rgba(0,0,0,0.08)', position: 'relative' }}>
+      <div ref={page2Ref} className="oe-report-page" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 28, boxShadow: '0 1px 3px rgba(0,0,0,0.08)', position: 'relative' }}>
         <span style={{ position: 'absolute', top: 8, right: 12, fontSize: 14, color: C.muted }}>2 / 2 쪽</span>
 
         <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>검증 필요 정보 현황{selectedRegion !== '전국' ? ` (${selectedRegion})` : ''}</div>

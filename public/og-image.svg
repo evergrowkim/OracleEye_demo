@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#F7F9FC"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#1B6DB5"/>
+  <circle cx="100" cy="315" r="12" fill="#1B6DB5"/>
+  <text x="130" y="300" font-family="sans-serif" font-size="48" font-weight="800" fill="#1A1A1A">Oracle EyE</text>
+  <text x="130" y="350" font-family="sans-serif" font-size="24" fill="#4A5568">AI Political Intelligence Platform</text>
+  <text x="130" y="420" font-family="sans-serif" font-size="20" fill="#8B95A5">실시간 여론 분석 · 다중 AI 교차 검증 · 일일 정세 보고</text>
+  <text x="130" y="460" font-family="sans-serif" font-size="18" fill="#1B6DB5">서울 · 경기 · 부산 3대 전장 모니터링</text>
+  <rect x="130" y="500" width="80" height="32" rx="4" fill="#00BFA5"/>
+  <text x="145" y="522" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">LIVE</text>
+  <text x="230" y="522" font-family="sans-serif" font-size="16" fill="#4A5568">by Doaz Inc.</text>
+  <rect x="700" y="120" width="400" height="380" rx="12" fill="#FFFFFF" stroke="#E3E8EF"/>
+  <rect x="720" y="140" width="360" height="60" rx="8" fill="#E8F2FB"/>
+  <text x="740" y="178" font-family="sans-serif" font-size="16" font-weight="600" fill="#1B6DB5">당 지지율 44.0% (+2.0%p)</text>
+  <rect x="720" y="220" width="360" height="60" rx="8" fill="#E6F9F5"/>
+  <text x="740" y="258" font-family="sans-serif" font-size="16" font-weight="600" fill="#00BFA5">긍정 여론 48% (+4%p)</text>
+  <rect x="720" y="300" width="360" height="60" rx="8" fill="#FFF8E8"/>
+  <text x="740" y="338" font-family="sans-serif" font-size="16" font-weight="600" fill="#F5A623">검증 필요 5건</text>
+  <rect x="720" y="380" width="170" height="40" rx="6" fill="#1B6DB5"/>
+  <text x="755" y="406" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">PDF 보고서</text>
+  <rect x="910" y="380" width="170" height="40" rx="6" fill="#00BFA5"/>
+  <text x="955" y="406" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">SNS 공유</text>
+</svg>
